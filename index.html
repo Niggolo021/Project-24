@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Nisha ❤️</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pink: #ff4d7d;
+  --red: #e0143c;
+  --dark-pink: #c2185b;
+  --glow-pink: #ff80ab;
+  --bg: #0a0008;
+  --panel: #1a0015;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  height: 100vh;
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+  font-family: 'Press Start 2P', cursive;
+  color: white;
+  cursor: default;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.08) 2px,rgba(0,0,0,0.08) 4px);
+  pointer-events: none; z-index: 9999;
+}
+
+.heart-bg { position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
+.heart-bg span { position:absolute; bottom:-20px; color:var(--pink); opacity:0; animation:floatHeart linear infinite; }
+@keyframes floatHeart { 0%{transform:translateY(0) scale(1);opacity:0.5} 50%{opacity:0.3} 100%{transform:translateY(-110vh) scale(0.5);opacity:0} }
+
+.dialog {
+  position:absolute; top:6vh; left:50%; transform:translateX(-50%);
+  background:var(--panel); padding:20px 24px;
+  border:3px solid var(--pink);
+  box-shadow:0 0 0 3px var(--bg),0 0 0 6px var(--pink),0 0 20px rgba(255,77,125,0.4);
+  width:min(92%,580px); display:none;
+  font-size:11px; line-height:2; text-align:center; z-index:500; white-space:pre-line;
+}
+.dialog::before { content:'▼'; position:absolute; bottom:8px; right:14px; font-size:8px; color:var(--pink); animation:blink 1s infinite; }
+@keyframes blink { 50%{opacity:0} }
+
+.fish {
+  position:absolute; width:70px; height:70px; display:none; cursor:pointer;
+  z-index:900; image-rendering:pixelated;
+  animation:wiggle 1.5s infinite ease-in-out, fishGlow 1.5s infinite alternate;
+}
+@keyframes wiggle { 0%{transform:rotate(0deg) scale(1)} 50%{transform:rotate(8deg) scale(1.05)} 100%{transform:rotate(0deg) scale(1)} }
+@keyframes fishGlow { from{filter:drop-shadow(0 0 3px var(--pink))} to{filter:drop-shadow(0 0 16px var(--glow-pink))} }
+
+#clickPrompt {
+  position:fixed; bottom:12px; left:50%; transform:translateX(-50%);
+  font-size:7px; color:var(--pink); opacity:0; animation:fadePrompt 2s 3.5s forwards;
+  z-index:600; text-align:center; white-space:nowrap;
+  letter-spacing:1px; text-shadow:0 0 8px var(--glow-pink); pointer-events:none;
+}
+@keyframes fadePrompt { to{opacity:0.7} }
+
+.cat-container {
+  position:absolute; bottom:2vh; left:50%; transform:translateX(-50%);
+  z-index:400; animation:catBob 2s infinite ease-in-out;
+}
+@keyframes catBob { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-8px)} }
+
+/* BATTLE */
+#battle { position:absolute; inset:0; display:none; background:var(--bg); overflow:hidden; }
+.ground {
+  position:absolute; bottom:0; height:90px; width:100%;
+  background:linear-gradient(to top,#1a000f,#2d0020);
+  border-top:3px solid var(--pink); box-shadow:0 -4px 20px rgba(255,77,125,0.3);
+}
+.ground::after {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:repeating-linear-gradient(90deg,var(--pink) 0px,var(--pink) 20px,transparent 20px,transparent 40px);
+}
+.character { position:absolute; bottom:90px; image-rendering:pixelated; transition:0.2s ease; }
+.hb-wrap { position:absolute; top:18px; width:220px; }
+#catHbWrap { left:5%; } #ratHbWrap { right:5%; text-align:right; }
+.hb-label { font-size:7px; color:var(--glow-pink); margin-bottom:5px; letter-spacing:1px; }
+.healthbar { width:220px; height:14px; border:2px solid white; background:#111; }
+#ratHbWrap .healthbar { margin-left:auto; }
+.hp { height:100%; transition:width 0.4s ease; }
+#catHP { background:linear-gradient(90deg,#ff4d7d,#ff80ab); width:100%; }
+#ratHP { background:linear-gradient(90deg,#e0143c,#ff4d7d); width:100%; }
+.hp-num { font-size:7px; color:#ccc; margin-top:3px; }
+#attackBtn {
+  position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
+  background:var(--panel); border:3px solid var(--pink);
+  box-shadow:0 0 12px rgba(255,77,125,0.5);
+  color:var(--pink); font-family:'Press Start 2P',cursive;
+  font-size:10px; padding:12px 28px; cursor:pointer; z-index:10; letter-spacing:1px;
+}
+#attackBtn:hover { background:var(--pink); color:var(--bg); transform:translateX(-50%) scale(1.05); }
+#attackBtn:active { transform:translateX(-50%) scale(0.97); }
+#attackBtn:disabled { opacity:0.3; cursor:not-allowed; transform:translateX(-50%); }
+.flash {
+  position:absolute; width:80px; height:80px;
+  background:radial-gradient(circle,white 0%,var(--pink) 50%,transparent 70%);
+  border-radius:50%; opacity:0.9; pointer-events:none; animation:impact 0.35s forwards; z-index:50;
+}
+@keyframes impact { to{transform:scale(3);opacity:0} }
+@keyframes shakeLeft  { 0%,100%{transform:translateX(0)} 25%{transform:translateX(15px)} 75%{transform:translateX(-8px)} }
+@keyframes shakeRight { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-15px)} 75%{transform:translateX(8px)} }
+.shake-left  { animation:shakeLeft  0.3s ease; }
+.shake-right { animation:shakeRight 0.3s ease; }
+#victory {
+  position:absolute; top:38%; left:50%; transform:translate(-50%,-50%);
+  font-size:clamp(18px,4vw,32px); color:var(--pink); display:none;
+  text-shadow:0 0 20px var(--glow-pink),0 0 40px var(--pink); text-align:center;
+  animation:victoryPulse 1s infinite alternate;
+}
+@keyframes victoryPulse { from{text-shadow:0 0 10px var(--glow-pink)} to{text-shadow:0 0 40px var(--glow-pink),0 0 80px var(--pink)} }
+
+/* GIFTS */
+#giftScreen {
+  position:absolute; inset:0; display:none; flex-direction:column;
+  justify-content:center; align-items:center; gap:40px; background:var(--bg); z-index:200;
+}
+#giftScreen h3 { font-size:clamp(10px,2.5vw,16px); color:var(--pink); text-shadow:0 0 10px var(--glow-pink); letter-spacing:2px; margin:0; }
+#giftScreen p  { font-size:8px; color:#aaa; margin:-30px 0 0 0; }
+.chests { display:flex; gap:clamp(20px,5vw,60px); align-items:flex-end; }
+.chest-wrap { display:flex; flex-direction:column; align-items:center; gap:10px; }
+.chest-label { font-size:7px; color:#aaa; text-align:center; }
+.chest-wrap { position:relative; }
+.chest {
+  width:clamp(90px,13vw,130px); height:clamp(75px,11vw,110px);
+  background:linear-gradient(175deg,#9b6230 0%,#7a4520 40%,#4e2a0e 100%);
+  position:relative; cursor:pointer;
+  border:3px solid #e8a822;
+  border-radius:4px 4px 6px 6px;
+  box-shadow:
+    0 0 18px rgba(232,168,34,0.5),
+    0 0 40px rgba(232,168,34,0.15),
+    inset 0 2px 6px rgba(255,200,80,0.2),
+    inset 0 -4px 10px rgba(0,0,0,0.4);
+  transition:transform 0.2s,box-shadow 0.3s;
+  image-rendering:pixelated;
+}
+.chest::before {
+  content:'';
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:28%; height:34%; border:2px solid #e8a822; border-radius:50%;
+  background:radial-gradient(circle,#e8a822 0%,#9b6230 60%,transparent 100%);
+  box-shadow:0 0 8px rgba(232,168,34,0.8);
+  z-index:2;
+}
+.chest::after { content:'🔒'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) translateY(2px); font-size:clamp(13px,2.5vw,19px); z-index:3; }
+.chest:hover  { transform:translateY(-8px) scale(1.05); box-shadow:0 0 30px rgba(232,168,34,0.7),0 0 60px rgba(232,168,34,0.2),inset 0 2px 6px rgba(255,200,80,0.3),inset 0 -4px 10px rgba(0,0,0,0.4); }
+.lid {
+  position:absolute; width:100%; height:38%;
+  background:linear-gradient(175deg,#c07830 0%,#8b5220 50%,#5e3412 100%);
+  top:-38%; border:3px solid #e8a822; border-bottom:none;
+  border-radius:4px 4px 0 0;
+  box-shadow:inset 0 3px 8px rgba(255,200,80,0.15);
+  transition:0.55s cubic-bezier(0.34,1.56,0.64,1);
+}
+.open .lid   { transform:translateY(-95px) rotate(-28deg); }
+.open::after { content:'✨'; }
+.open { box-shadow:0 0 35px rgba(255,200,80,0.8),0 0 70px rgba(255,150,50,0.3),inset 0 0 20px rgba(255,200,80,0.2); }
+.chest-label { font-size:9px; color:#e8a822; text-align:center; letter-spacing:3px; text-shadow:0 0 8px rgba(232,168,34,0.6); }
+
+/* REWARD */
+#reward {
+  position:absolute; inset:0; display:none; justify-content:center; align-items:center;
+  flex-direction:column; text-align:center; padding:30px 20px;
+  background:var(--bg); z-index:300; overflow-y:auto;
+}
+.reward-close { position:absolute; top:16px; right:20px; font-size:9px; color:var(--pink); cursor:pointer; border:2px solid var(--pink); padding:6px 10px; background:var(--panel); }
+.reward-close:hover { background:var(--pink); color:var(--bg); }
+.poem-box { border:3px solid var(--pink); box-shadow:0 0 20px rgba(255,77,125,0.3); padding:30px 24px; max-width:500px; width:92%; background:var(--panel); line-height:2.6; font-size:clamp(8px,1.5vw,10px); color:#ffd6e7; }
+.poem-title { font-size:clamp(10px,2vw,14px); color:var(--pink); margin-bottom:20px; text-shadow:0 0 10px var(--glow-pink); }
+.slide-frame { border:4px solid var(--pink); box-shadow:0 0 30px rgba(255,77,125,0.4); overflow:hidden; width:min(90vw,340px); height:min(60vw,260px); background:#111; }
+.slide-frame img { width:100%; height:100%; object-fit:cover; transition:opacity 0.8s ease; }
+.slide-caption { margin-top:14px; font-size:8px; color:var(--glow-pink); max-width:340px; }
+.letter-box { border:3px solid var(--pink); background:var(--panel); padding:28px 24px; max-width:520px; width:92%; text-align:left; box-shadow:0 0 20px rgba(255,77,125,0.3); }
+.letter-title { font-size:clamp(9px,2vw,13px); color:var(--pink); margin-bottom:20px; text-align:center; text-shadow:0 0 10px var(--glow-pink); }
+.letter-reason { display:flex; gap:10px; margin-bottom:18px; font-size:clamp(7px,1.3vw,9px); line-height:2.2; color:#ffd6e7; align-items:flex-start; }
+.reason-num { color:var(--pink); flex-shrink:0; margin-top:2px; }
+.letter-sign { text-align:right; color:var(--pink); font-size:clamp(7px,1.3vw,9px); margin-top:20px; border-top:1px solid var(--dark-pink); padding-top:14px; }
+
+/* ENDING */
+#endingScreen {
+  position:absolute; inset:0; display:none; flex-direction:column;
+  justify-content:flex-end; align-items:center; background:var(--bg); z-index:800; overflow:hidden;
+}
+.wave-cat-wrap { position:relative; width:200px; flex-shrink:0; transform:translateY(300px); }
+@keyframes endingSlideUp { to { transform:translateY(0); } }
+.wave-arm { position:absolute; top:28px; left:-28px; width:28px; height:44px; transform-origin:bottom center; animation:waveArm 0.5s ease-in-out infinite alternate; }
+@keyframes waveArm { from{transform:rotate(-20deg)} to{transform:rotate(30deg)} }
+.ending-dialog {
+  position:absolute; top:6vh; left:50%; transform:translateX(-50%);
+  background:var(--panel); padding:20px 24px;
+  border:3px solid var(--pink);
+  box-shadow:0 0 0 3px var(--bg),0 0 0 6px var(--pink),0 0 20px rgba(255,77,125,0.4);
+  width:min(92%,580px); display:none; font-size:10px; line-height:2.2; text-align:center; z-index:900; white-space:pre-line;
+}
+.ending-dialog-tap { font-size:7px; color:var(--pink); margin-top:10px; animation:blink 1s infinite; display:block; }
+
+/* ═══════════════════════════════════
+   CHASE SCREEN
+   ═══════════════════════════════════ */
+#chaseScreen {
+  position: absolute; inset: 0; display: none;
+  background: var(--bg); z-index: 700; overflow: hidden;
+}
+
+/* Movie credits panel */
+#movieCredits {
+  position: absolute;
+  left: 50%; top: 0;
+  transform: translateX(-50%);
+  width: min(92vw, 480px);
+  height: 100%;
+  overflow: hidden;
+  z-index: 30;
+  pointer-events: none;
+}
+#creditsInner {
+  position: absolute;
+  bottom: -100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding-bottom: 60px;
+  animation: creditsScroll 38s linear forwards;
+}
+@keyframes creditsScroll {
+  0%   { bottom: -100%; }
+  100% { bottom: 140%; }
+}
+.credit-block {
+  width: 100%;
+  text-align: center;
+  padding: 28px 0 32px;
+  border-bottom: 1px solid rgba(255,77,125,0.12);
+}
+.credit-role {
+  font-size: 8px;
+  color: #b088d8;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.credit-name {
+  font-size: clamp(13px, 3.5vw, 20px);
+  color: #fff;
+  text-shadow: 0 0 20px rgba(255,77,125,0.8), 0 0 40px rgba(255,77,125,0.4);
+  letter-spacing: 2px;
+}
+.credit-sub {
+  font-size: 7px;
+  color: #e0b8ff;
+  margin-top: 6px;
+  opacity: 0.75;
+}
+.credit-title {
+  font-size: clamp(10px, 2.5vw, 14px);
+  color: var(--pink);
+  letter-spacing: 6px;
+  text-shadow: 0 0 15px var(--glow-pink);
+  padding: 40px 0 10px;
+}
+.credit-divider {
+  width: 60px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--pink), transparent);
+  margin: 10px auto 0;
+}
+
+/* THE END screen */
+#theEndScreen {
+  position: absolute; inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: #000;
+  z-index: 900;
+  animation: theEndFade 3s ease forwards;
+}
+@keyframes theEndFade { from{opacity:0} to{opacity:1} }
+#theEndText {
+  text-align: center;
+  animation: theEndGlow 2s ease infinite alternate;
+}
+@keyframes theEndGlow {
+  from { text-shadow: 0 0 20px var(--pink), 0 0 40px var(--pink); }
+  to   { text-shadow: 0 0 60px var(--pink), 0 0 120px var(--pink), 0 0 200px rgba(255,77,125,0.4); }
+}
+.the-end-main {
+  font-size: clamp(48px, 14vw, 96px);
+  color: #fff;
+  letter-spacing: 12px;
+  display: block;
+}
+.the-end-sub {
+  font-size: clamp(9px, 2vw, 13px);
+  color: var(--pink);
+  letter-spacing: 8px;
+  display: block;
+  margin-top: 16px;
+  opacity: 0.85;
+}
+
+/* Floating sprites */
+.chase-sprite {
+  position: absolute;
+  image-rendering: pixelated;
+  pointer-events: none;
+  /* flip handled via JS scaleX */
+}
+
+/* Exclamation bubble on rat */
+#ratExclaim {
+  position: absolute;
+  font-size: 14px;
+  pointer-events: none;
+  z-index: 20;
+  animation: exclaim 0.4s infinite alternate;
+}
+@keyframes exclaim { from{transform:scale(1) translateY(0)} to{transform:scale(1.2) translateY(-4px)} }
+
+/* MISC */
+.star { position:fixed; border-radius:50%; background:white; animation:twinkle 2s infinite alternate; pointer-events:none; z-index:1; }
+@keyframes twinkle { from{opacity:0.1;transform:scale(0.8)} to{opacity:1;transform:scale(1.2)} }
+.confetti { position:fixed; width:8px; height:8px; animation:fall linear forwards; pointer-events:none; z-index:400; }
+@keyframes fall { to{transform:translateY(110vh) rotate(720deg);opacity:0} }
+.heart-burst { position:fixed; font-size:20px; pointer-events:none; z-index:400; animation:burstUp 1.5s ease forwards; }
+@keyframes burstUp { to{transform:translateY(-200px) scale(0.3);opacity:0} }
+/* Floating chase hearts */
+.chase-heart { position:absolute; pointer-events:none; animation:chaseHeartFloat linear forwards; z-index:5; }
+@keyframes chaseHeartFloat { 0%{transform:translateY(0);opacity:0.8} 100%{transform:translateY(-80px);opacity:0} }
+
+/* ═══ TITLE SCREEN ═══ */
+#titleScreen {
+  position: fixed; inset: 0; z-index: 2000;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  gap: 0;
+  transition: opacity 1.2s ease;
+}
+#titleScreen.fade-out { opacity: 0; pointer-events: none; }
+.title-pre {
+  font-size: clamp(7px, 1.5vw, 10px);
+  color: #b088d8;
+  letter-spacing: 6px;
+  margin-bottom: 18px;
+  animation: titleFadeIn 1.5s ease forwards;
+  opacity: 0;
+}
+.title-main {
+  font-size: clamp(28px, 9vw, 64px);
+  color: #fff;
+  text-shadow: 0 0 30px var(--pink), 0 0 80px rgba(255,77,125,0.4);
+  letter-spacing: 4px;
+  animation: titleFadeIn 1.5s 0.4s ease forwards;
+  opacity: 0;
+  text-align: center;
+  line-height: 1.3;
+}
+.title-main span { color: var(--pink); }
+.title-sub {
+  font-size: clamp(6px, 1.2vw, 8px);
+  color: #e0b8ff;
+  margin-top: 22px;
+  letter-spacing: 3px;
+  animation: titleFadeIn 1.5s 0.8s ease forwards;
+  opacity: 0;
+}
+.title-start {
+  font-size: clamp(7px, 1.5vw, 10px);
+  color: var(--pink);
+  margin-top: 44px;
+  letter-spacing: 4px;
+  animation: titleFadeIn 1s 1.4s ease forwards, titleBlink 1s 2.4s infinite;
+  opacity: 0;
+  cursor: pointer;
+  border: 2px solid var(--pink);
+  padding: 12px 24px;
+  transition: background 0.2s, color 0.2s;
+}
+.title-start:hover { background: var(--pink); color: var(--bg); }
+@keyframes titleFadeIn { to { opacity: 1; } }
+@keyframes titleBlink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+.title-hearts {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+}
+.title-heart {
+  position: absolute;
+  bottom: -20px;
+  font-size: 14px;
+  animation: titleHeartRise linear forwards;
+  opacity: 0;
+}
+@keyframes titleHeartRise {
+  0%   { transform: translateY(0) scale(0.5); opacity: 0; }
+  10%  { opacity: 0.6; }
+  90%  { opacity: 0.3; }
+  100% { transform: translateY(-105vh) scale(1.2); opacity: 0; }
+}
+
+/* Rose petals on gift screen */
+.petal {
+  position: fixed;
+  pointer-events: none;
+  z-index: 201;
+  font-size: 12px;
+  animation: petalFall linear forwards;
+  opacity: 0;
+}
+@keyframes petalFall {
+  0%   { transform: translateY(-20px) rotate(0deg);   opacity: 0; }
+  5%   { opacity: 0.7; }
+  90%  { opacity: 0.4; }
+  100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+}
+
+/* Screen shake on damage */
+@keyframes screenShake {
+  0%,100% { transform: translate(0,0) rotate(0deg); }
+  15%      { transform: translate(-6px, 3px) rotate(-0.5deg); }
+  30%      { transform: translate(6px, -3px) rotate(0.5deg); }
+  45%      { transform: translate(-4px, 4px) rotate(-0.3deg); }
+  60%      { transform: translate(4px, -2px) rotate(0.3deg); }
+  75%      { transform: translate(-2px, 2px) rotate(0deg); }
+}
+.shake { animation: screenShake 0.4s ease; }
+
+/* ═══════════════════════════════════════
+   MOBILE FIXES — max-width 600px
+   ═══════════════════════════════════════ */
+@media (max-width: 600px) {
+
+  /* --- INTRO --- */
+  .dialog {
+    font-size: 9px;
+    padding: 16px 14px;
+    line-height: 2.2;
+    width: 92%;
+    top: 4vh;
+  }
+  .cat-container { bottom: 8vh; }
+  #clickPrompt { font-size: 6px; white-space: normal; text-align: center; width: 90%; }
+
+  /* --- TITLE SCREEN --- */
+  .title-pre    { font-size: 6px; letter-spacing: 3px; }
+  .title-main   { font-size: clamp(32px, 12vw, 52px); }
+  .title-sub    { font-size: 6px; }
+  .title-start  { font-size: 8px; padding: 14px 22px; margin-top: 32px; }
+
+  /* --- BATTLE --- */
+  .hb-wrap { width: 42vw; }
+  .healthbar { width: 100%; height: 12px; }
+  .hb-label { font-size: 5.5px; }
+  .hp-num   { font-size: 5.5px; }
+  #catHbWrap { left: 2%; }
+  #ratHbWrap { right: 2%; }
+
+  #attackBtn {
+    font-size: 9px;
+    padding: 16px 32px;
+    bottom: 12px;
+    letter-spacing: 0px;
+    min-width: 160px;
+    touch-action: manipulation;
+  }
+
+  .ground { height: 70px; }
+  .character { bottom: 70px; }
+
+  /* --- GIFT SCREEN --- */
+  #giftScreen h3 { font-size: 9px; letter-spacing: 1px; }
+  #giftScreen p  { font-size: 7px; }
+  .chests { gap: 14px; }
+  .chest-label { font-size: 7px; }
+
+  /* --- REWARD SCREENS --- */
+  #reward {
+    padding: 16px 12px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+    padding-top: 48px;
+  }
+  .reward-close {
+    position: fixed;
+    top: 10px; right: 10px;
+    font-size: 8px;
+    padding: 8px 12px;
+    z-index: 400;
+  }
+
+  /* Poem */
+  .poem-box { font-size: 9px; padding: 20px 14px; line-height: 2.4; }
+  .poem-title { font-size: 10px; }
+
+  /* Slideshow */
+  .slide-frame {
+    width: 92vw;
+    height: 62vw;
+  }
+  .slide-caption { font-size: 7px; }
+
+  /* Letter */
+  .letter-box { padding: 18px 14px; }
+  .letter-title  { font-size: 10px; }
+  .letter-reason { font-size: 8px; line-height: 2; }
+  .letter-sign   { font-size: 8px; }
+
+  /* --- ENDING DIALOG --- */
+  .ending-dialog {
+    font-size: 9px;
+    padding: 14px 16px;
+    width: 92%;
+    line-height: 2.2;
+    top: 3vh;
+  }
+
+  /* --- CREDITS --- */
+  #movieCredits { width: 96vw; }
+  .credit-role  { font-size: 6.5px; letter-spacing: 2px; }
+  .credit-name  { font-size: clamp(14px, 5vw, 20px); }
+  .credit-sub   { font-size: 6.5px; }
+  .credit-title { font-size: 9px; }
+  .credit-block { padding: 20px 0 22px; }
+
+  /* --- THE END --- */
+  .the-end-main { font-size: clamp(36px, 13vw, 64px); letter-spacing: 6px; }
+  .the-end-sub  { font-size: 8px; letter-spacing: 4px; }
+}
+
+/* Extra small phones */
+@media (max-width: 380px) {
+  .title-main { font-size: 28px; }
+  .dialog     { font-size: 8px; }
+  .poem-box   { font-size: 8px; }
+  .letter-reason { font-size: 7.5px; }
+  #attackBtn  { font-size: 8px; padding: 14px 24px; }
+}
+
+
+/* Battle dialog — positioned mid-screen, never overlaps health bars */
+#battleDialog {
+  position: absolute;
+  bottom: 80px;
+  left: 50%; transform: translateX(-50%);
+  background: var(--panel);
+  border: 2px solid var(--pink);
+  box-shadow: 0 0 12px rgba(255,77,125,0.4);
+  padding: 10px 18px;
+  font-size: 9px; line-height: 2;
+  color: white; text-align: center;
+  white-space: pre-line;
+  width: min(88%, 420px);
+  z-index: 20;
+  display: none;
+  pointer-events: none;
+}
+@media (max-width: 600px) {
+  #battleDialog { font-size: 7.5px; padding: 8px 12px; bottom: 72px; }
+}
+</style>
+</head>
+<body>
+
+
+<div id="titleScreen">
+  <div class="title-hearts" id="titleHearts"></div>
+  <div class="title-pre">✦ &nbsp; a birthday gift &nbsp; ✦</div>
+  <div class="title-main">FOR<br><span>NISHA</span></div>
+  <div class="title-sub">an adventure made just for you</div>
+  <div class="title-start" id="titleStartBtn" onclick="startGame()">▶ &nbsp; PRESS START</div>
+</div>
+
+<div class="heart-bg" id="heartBg"></div>
+<div id="starField"></div>
+<div class="dialog" id="dialog"></div>
+<div id="clickPrompt">✨ catch the glowing fish to continue ✨</div>
+
+<!-- INTRO CAT -->
+<div class="cat-container" id="cat">
+  <svg width="180" height="200" viewBox="0 0 36 40" image-rendering="pixelated">
+    <rect x="6"  y="30" width="3" height="3" fill="#e8a0b0"/>
+    <rect x="4"  y="27" width="3" height="3" fill="#e8a0b0"/>
+    <rect x="3"  y="24" width="3" height="3" fill="#e8a0b0"/>
+    <rect x="9"  y="22" width="18" height="14" fill="#f4c2ce"/>
+    <rect x="12" y="25" width="12" height="8"  fill="#fff0f4"/>
+    <rect x="9"  y="33" width="5"  height="5"  fill="#f4c2ce"/>
+    <rect x="22" y="33" width="5"  height="5"  fill="#f4c2ce"/>
+    <rect x="10" y="36" width="4"  height="2"  fill="#ffb3c6"/>
+    <rect x="22" y="36" width="4"  height="2"  fill="#ffb3c6"/>
+    <rect x="13" y="19" width="10" height="4"  fill="#f4c2ce"/>
+    <rect x="9"  y="8"  width="18" height="14" fill="#f4c2ce"/>
+    <rect x="9"  y="4"  width="6"  height="7"  fill="#f4c2ce"/>
+    <rect x="21" y="4"  width="6"  height="7"  fill="#f4c2ce"/>
+    <rect x="10" y="5"  width="4"  height="5"  fill="#ffb3c6"/>
+    <rect x="22" y="5"  width="4"  height="5"  fill="#ffb3c6"/>
+    <rect x="12" y="13" width="4"  height="4"  fill="#1a0015"/>
+    <rect x="20" y="13" width="4"  height="4"  fill="#1a0015"/>
+    <rect x="13" y="14" width="1"  height="1"  fill="white"/>
+    <rect x="21" y="14" width="1"  height="1"  fill="white"/>
+    <rect x="17" y="18" width="2"  height="1"  fill="#ff80ab"/>
+    <rect x="15" y="19" width="2"  height="1"  fill="#ff80ab"/>
+    <rect x="19" y="19" width="2"  height="1"  fill="#ff80ab"/>
+    <rect x="12" y="20" width="12" height="3"  fill="#e0143c"/>
+    <rect x="17" y="21" width="2"  height="2"  fill="gold"/>
+    <rect x="10" y="17" width="3"  height="2"  fill="#ffb3c6" opacity="0.6"/>
+    <rect x="23" y="17" width="3"  height="2"  fill="#ffb3c6" opacity="0.6"/>
+  </svg>
+</div>
+
+<svg id="fish" class="fish" style="touch-action:manipulation;" viewBox="0 0 32 32">
+  <rect x="4" y="10" width="16" height="12" fill="#ff80ab"/>
+  <rect x="20" y="12" width="6"  height="4"  fill="#ff80ab"/>
+  <rect x="26" y="10" width="4"  height="4"  fill="#ff4d7d"/>
+  <rect x="26" y="16" width="4"  height="4"  fill="#ff4d7d"/>
+  <rect x="2"  y="13" width="4"  height="6"  fill="#ff4d7d"/>
+  <rect x="6"  y="13" width="2"  height="2"  fill="white"/>
+  <rect x="7"  y="13" width="1"  height="1"  fill="#1a0015"/>
+</svg>
+
+<!-- BATTLE -->
+<div id="battle">
+  <div class="ground"></div>
+  <div class="hb-wrap" id="catHbWrap">
+    <div class="hb-label">✦ YOUR CAT</div>
+    <div class="healthbar"><div class="hp" id="catHP"></div></div>
+    <div class="hp-num" id="catHPNum">100 / 100</div>
+  </div>
+  <div class="hb-wrap" id="ratHbWrap">
+    <div class="hb-label">EVIL RAT ✦</div>
+    <div class="healthbar"><div class="hp" id="ratHP"></div></div>
+    <div class="hp-num" id="ratHPNum">100 / 100</div>
+  </div>
+  <div id="battleCat" class="character" style="bottom:90px;left:4%;width:150px;">
+    <svg width="150" height="160" viewBox="0 0 36 40" image-rendering="pixelated">
+      <rect x="6"  y="30" width="3" height="3" fill="#e8a0b0"/>
+      <rect x="4"  y="27" width="3" height="3" fill="#e8a0b0"/>
+      <rect x="3"  y="24" width="3" height="3" fill="#e8a0b0"/>
+      <rect x="9"  y="22" width="18" height="14" fill="#f4c2ce"/>
+      <rect x="12" y="25" width="12" height="8"  fill="#fff0f4"/>
+      <rect x="9"  y="33" width="5"  height="5"  fill="#f4c2ce"/>
+      <rect x="22" y="33" width="5"  height="5"  fill="#f4c2ce"/>
+      <rect x="13" y="19" width="10" height="4"  fill="#f4c2ce"/>
+      <rect x="9"  y="8"  width="18" height="14" fill="#f4c2ce"/>
+      <rect x="9"  y="4"  width="6"  height="7"  fill="#f4c2ce"/>
+      <rect x="21" y="4"  width="6"  height="7"  fill="#f4c2ce"/>
+      <rect x="10" y="5"  width="4"  height="5"  fill="#ffb3c6"/>
+      <rect x="22" y="5"  width="4"  height="5"  fill="#ffb3c6"/>
+      <rect x="12" y="13" width="4"  height="4"  fill="#1a0015"/>
+      <rect x="20" y="13" width="4"  height="4"  fill="#1a0015"/>
+      <rect x="13" y="14" width="1"  height="1"  fill="white"/>
+      <rect x="21" y="14" width="1"  height="1"  fill="white"/>
+      <rect x="17" y="18" width="2"  height="1"  fill="#ff80ab"/>
+      <rect x="12" y="20" width="12" height="3"  fill="#e0143c"/>
+      <rect x="17" y="21" width="2"  height="2"  fill="gold"/>
+    </svg>
+  </div>
+  <div id="battleRat" class="character" style="bottom:90px;right:3%;width:180px;">
+    <svg width="180" height="180" viewBox="0 0 64 64" image-rendering="pixelated">
+      <rect x="14" y="24" width="36" height="24" fill="#3d1f2e"/>
+      <rect x="12" y="12" width="20" height="16" fill="#3d1f2e"/>
+      <rect x="8"  y="18" width="8"  height="8"  fill="#5a2a3e"/>
+      <rect x="10" y="6"  width="8"  height="10" fill="#5a2a3e"/>
+      <rect x="11" y="7"  width="6"  height="7"  fill="#8b3a5a"/>
+      <rect x="14" y="16" width="5"  height="5"  fill="#ff0000"/>
+      <rect x="19" y="14" width="2"  height="8"  fill="#8b0000" opacity="0.7"/>
+      <rect x="10" y="24" width="3"  height="4"  fill="#fffde7"/>
+      <rect x="14" y="24" width="3"  height="4"  fill="#fffde7"/>
+      <rect x="14" y="46" width="4"  height="6"  fill="#3d1f2e"/>
+      <rect x="42" y="46" width="4"  height="6"  fill="#3d1f2e"/>
+      <rect x="50" y="32" width="4"  height="3"  fill="#5a2a3e"/>
+      <rect x="54" y="29" width="3"  height="3"  fill="#5a2a3e"/>
+      <rect x="20" y="4"  width="12" height="4"  fill="#8b0000"/>
+      <rect x="18" y="2"  width="4"  height="6"  fill="#8b0000"/>
+      <rect x="26" y="2"  width="4"  height="6"  fill="#8b0000"/>
+      <rect x="22" y="1"  width="4"  height="4"  fill="#8b0000"/>
+      <rect x="19" y="2"  width="2"  height="2"  fill="gold"/>
+      <rect x="27" y="2"  width="2"  height="2"  fill="gold"/>
+      <rect x="23" y="1"  width="2"  height="2"  fill="#ff4d7d"/>
+      <rect x="8"  y="26" width="8"  height="20" fill="#5a0000"/>
+      <rect x="48" y="26" width="8"  height="20" fill="#5a0000"/>
+    </svg>
+  </div>
+  <div id="battleDialog"></div>
+  <button id="attackBtn" onclick="playerAttack()">⚔ ATTACK</button>
+  <div id="victory">✨ VICTORY! ✨<br><span style="font-size:0.5em;color:white;display:block;margin-top:10px;">you did it!</span></div>
+</div>
+
+<!-- GIFTS -->
+<div id="giftScreen">
+  <h3>✨ Choose Your Reward ✨</h3>
+  <p>three surprises await ✦</p>
+  <div class="chests">
+    <div class="chest-wrap">
+      <div class="chest" id="chest1" onclick="openReward(1,this)"><div class="lid"></div></div>
+      <div class="chest-label">✦ I ✦</div>
+    </div>
+    <div class="chest-wrap">
+      <div class="chest" id="chest2" onclick="openReward(2,this)"><div class="lid"></div></div>
+      <div class="chest-label">✦ II ✦</div>
+    </div>
+    <div class="chest-wrap">
+      <div class="chest" id="chest3" onclick="openReward(3,this)"><div class="lid"></div></div>
+      <div class="chest-label">✦ III ✦</div>
+    </div>
+  </div>
+</div>
+<div id="reward"></div>
+
+<!-- ENDING -->
+<div id="endingScreen">
+  <div class="ending-dialog" id="endingDialog"></div>
+  <div class="wave-cat-wrap" id="waveCatWrap">
+    <svg class="wave-arm" viewBox="0 0 14 22" image-rendering="pixelated">
+      <rect x="2" y="0"  width="6" height="12" fill="#f4c2ce"/>
+      <rect x="2" y="12" width="6" height="4"  fill="#ffb3c6"/>
+      <rect x="0" y="14" width="5" height="3"  fill="#ffb3c6"/>
+    </svg>
+    <svg width="200" height="220" viewBox="0 0 36 40" image-rendering="pixelated">
+      <rect x="6"  y="30" width="3" height="3" fill="#e8a0b0"/>
+      <rect x="4"  y="27" width="3" height="3" fill="#e8a0b0"/>
+      <rect x="3"  y="24" width="3" height="3" fill="#e8a0b0"/>
+      <rect x="9"  y="22" width="18" height="14" fill="#f4c2ce"/>
+      <rect x="12" y="25" width="12" height="8"  fill="#fff0f4"/>
+      <rect x="9"  y="33" width="5"  height="5"  fill="#f4c2ce"/>
+      <rect x="22" y="33" width="5"  height="5"  fill="#f4c2ce"/>
+      <rect x="10" y="36" width="4"  height="2"  fill="#ffb3c6"/>
+      <rect x="22" y="36" width="4"  height="2"  fill="#ffb3c6"/>
+      <rect x="13" y="19" width="10" height="4"  fill="#f4c2ce"/>
+      <rect x="9"  y="8"  width="18" height="14" fill="#f4c2ce"/>
+      <rect x="9"  y="4"  width="6"  height="7"  fill="#f4c2ce"/>
+      <rect x="21" y="4"  width="6"  height="7"  fill="#f4c2ce"/>
+      <rect x="10" y="5"  width="4"  height="5"  fill="#ffb3c6"/>
+      <rect x="22" y="5"  width="4"  height="5"  fill="#ffb3c6"/>
+      <rect x="12" y="14" width="4"  height="2"  fill="#1a0015"/>
+      <rect x="20" y="14" width="4"  height="2"  fill="#1a0015"/>
+      <rect x="15" y="19" width="2"  height="1"  fill="#ff80ab"/>
+      <rect x="19" y="19" width="2"  height="1"  fill="#ff80ab"/>
+      <rect x="17" y="20" width="2"  height="1"  fill="#ff80ab"/>
+      <rect x="17" y="18" width="2"  height="1"  fill="#ff80ab"/>
+      <rect x="12" y="20" width="12" height="3"  fill="#e0143c"/>
+      <rect x="17" y="21" width="2"  height="2"  fill="gold"/>
+      <rect x="10" y="17" width="3"  height="2"  fill="#ffb3c6" opacity="0.7"/>
+      <rect x="23" y="17" width="3"  height="2"  fill="#ffb3c6" opacity="0.7"/>
+    </svg>
+  </div>
+</div>
+
+<!-- CHASE SCREEN -->
+<div id="chaseScreen">
+  <!-- Cat sprite with birthday hat -->
+  <div id="chaseCat" class="chase-sprite" style="width:110px;">
+    <svg width="110" height="130" viewBox="0 0 36 44" image-rendering="pixelated">
+      <!-- Birthday hat -->
+      <polygon points="18,0 14,10 22,10" fill="#ff4d7d"/>
+      <rect x="14" y="8" width="8" height="3" fill="#ffb3c6"/>
+      <rect x="17" y="0" width="2" height="2" fill="gold"/>
+      <!-- Cat body -->
+      <rect x="6"  y="34" width="3" height="3" fill="#e8a0b0"/>
+      <rect x="4"  y="31" width="3" height="3" fill="#e8a0b0"/>
+      <rect x="3"  y="28" width="3" height="3" fill="#e8a0b0"/>
+      <rect x="9"  y="26" width="18" height="14" fill="#f4c2ce"/>
+      <rect x="12" y="29" width="12" height="8"  fill="#fff0f4"/>
+      <rect x="9"  y="37" width="5"  height="5"  fill="#f4c2ce"/>
+      <rect x="22" y="37" width="5"  height="5"  fill="#f4c2ce"/>
+      <rect x="13" y="23" width="10" height="4"  fill="#f4c2ce"/>
+      <rect x="9"  y="12" width="18" height="14" fill="#f4c2ce"/>
+      <rect x="9"  y="8"  width="6"  height="7"  fill="#f4c2ce"/>
+      <rect x="21" y="8"  width="6"  height="7"  fill="#f4c2ce"/>
+      <rect x="10" y="9"  width="4"  height="5"  fill="#ffb3c6"/>
+      <rect x="22" y="9"  width="4"  height="5"  fill="#ffb3c6"/>
+      <!-- Determined eyes (>_<) -->
+      <rect x="11" y="17" width="6"  height="2"  fill="#1a0015"/>
+      <rect x="11" y="15" width="2"  height="2"  fill="#1a0015"/>
+      <rect x="19" y="17" width="6"  height="2"  fill="#1a0015"/>
+      <rect x="23" y="15" width="2"  height="2"  fill="#1a0015"/>
+      <rect x="17" y="22" width="2"  height="1"  fill="#ff80ab"/>
+      <rect x="12" y="24" width="12" height="3"  fill="#e0143c"/>
+      <rect x="17" y="25" width="2"  height="2"  fill="gold"/>
+    </svg>
+  </div>
+
+  <!-- Rat sprite with white surrender flag -->
+  <div id="chaseRat" class="chase-sprite" style="width:100px;">
+    <svg width="100" height="110" viewBox="0 0 64 74" image-rendering="pixelated">
+      <!-- White flag pole + flag -->
+      <rect x="44" y="2"  width="3"  height="22" fill="#ccc"/>
+      <rect x="47" y="2"  width="12" height="8"  fill="white"/>
+      <rect x="47" y="4"  width="8"  height="4"  fill="#ddd"/>
+      <!-- Rat body -->
+      <rect x="14" y="34" width="36" height="24" fill="#3d1f2e"/>
+      <rect x="12" y="22" width="20" height="16" fill="#3d1f2e"/>
+      <rect x="8"  y="28" width="8"  height="8"  fill="#5a2a3e"/>
+      <rect x="10" y="16" width="8"  height="10" fill="#5a2a3e"/>
+      <rect x="11" y="17" width="6"  height="7"  fill="#8b3a5a"/>
+      <!-- Scared eyes (o_o) -->
+      <rect x="13" y="26" width="6"  height="6"  fill="white"/>
+      <rect x="15" y="27" width="4"  height="4"  fill="#ff0000"/>
+      <rect x="16" y="28" width="2"  height="2"  fill="#1a0015"/>
+      <!-- Sweat drop -->
+      <rect x="24" y="20" width="3"  height="4"  fill="#4fc3f7" opacity="0.8"/>
+      <rect x="25" y="24" width="2"  height="2"  fill="#4fc3f7" opacity="0.8"/>
+      <rect x="10" y="34" width="3"  height="4"  fill="#fffde7"/>
+      <rect x="14" y="34" width="3"  height="4"  fill="#fffde7"/>
+      <rect x="14" y="56" width="4"  height="6"  fill="#3d1f2e"/>
+      <rect x="42" y="56" width="4"  height="6"  fill="#3d1f2e"/>
+      <rect x="50" y="42" width="4"  height="3"  fill="#5a2a3e"/>
+      <rect x="54" y="39" width="3"  height="3"  fill="#5a2a3e"/>
+      <!-- Torn cape (lost crown) -->
+      <rect x="8"  y="36" width="8"  height="16" fill="#5a0000" opacity="0.6"/>
+      <rect x="48" y="36" width="8"  height="16" fill="#5a0000" opacity="0.6"/>
+    </svg>
+  </div>
+
+  <!-- Movie Credits -->
+  <div id="movieCredits">
+    <div id="creditsInner">
+
+      <div class="credit-title">✦ &nbsp; PRESENTS &nbsp; ✦<div class="credit-divider"></div></div>
+
+      <div class="credit-block">
+        <div class="credit-role">A Film By</div>
+        <div class="credit-name">SURESH</div>
+        <div class="credit-sub">who stayed up way too late making this</div>
+      </div>
+
+      <div class="credit-block">
+        <div class="credit-role">Starring</div>
+        <div class="credit-name">NISHA</div>
+        <div class="credit-sub">the guest of honour &amp; the whole reason this exists</div>
+      </div>
+
+      <div class="credit-block">
+        <div class="credit-role">Also Starring</div>
+        <div class="credit-name">THE CAT</div>
+        <div class="credit-sub">relentless. fearless. slightly unhinged.</div>
+      </div>
+
+      <div class="credit-block">
+        <div class="credit-role">Villain</div>
+        <div class="credit-name">THE EVIL MOUSE</div>
+        <div class="credit-sub">defeated. still running. learning nothing.</div>
+      </div>
+
+      <div class="credit-block">
+        <div class="credit-role">Pixel Art &amp; Engineering</div>
+        <div class="credit-name">CLAUDE</div>
+        <div class="credit-sub">an AI who tried its best &amp; had feelings about it</div>
+      </div>
+
+      <div class="credit-block">
+        <div class="credit-role">Original Score</div>
+        <div class="credit-name">Web Audio API</div>
+        <div class="credit-sub">no musicians were harmed in the making of these bleeps</div>
+      </div>
+
+      <div class="credit-block">
+        <div class="credit-role">Produced With</div>
+        <div class="credit-name">A LOT OF LOVE</div>
+        <div class="credit-sub">for someone who deserves all of it</div>
+      </div>
+
+      <div class="credit-block" style="border:none; padding-top:40px;">
+        <div class="credit-role" style="letter-spacing:2px; color:var(--pink);">❤️ &nbsp; Happy Birthday, Nisha &nbsp; ❤️</div>
+        <div class="credit-name" style="font-size:clamp(9px,2vw,12px); color:#e0b8ff; margin-top:10px;">from your biggest fan — always</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- THE END screen -->
+  <div id="theEndScreen">
+    <div id="theEndText">
+      <span class="the-end-main">THE END</span>
+      <span class="the-end-sub">❤️ &nbsp; made with love, for you &nbsp; ❤️</span>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   WEB AUDIO
+   ═══════════════════════════════════════ */
+const AC = new (window.AudioContext || window.webkitAudioContext)();
+let currentTrackStop = null;
+
+function playNote(freq,startTime,duration,gain=0.18,type='square'){
+  const o=AC.createOscillator(),g=AC.createGain();
+  o.connect(g);g.connect(AC.destination);o.type=type;
+  o.frequency.setValueAtTime(freq,startTime);
+  g.gain.setValueAtTime(0,startTime);
+  g.gain.linearRampToValueAtTime(gain,startTime+0.01);
+  g.gain.linearRampToValueAtTime(gain*0.7,startTime+duration*0.6);
+  g.gain.linearRampToValueAtTime(0,startTime+duration);
+  o.start(startTime);o.stop(startTime+duration+0.05);
+}
+function playDrum(t,pitch=80,gain=0.12){
+  const o=AC.createOscillator(),g=AC.createGain();
+  o.connect(g);g.connect(AC.destination);o.type='triangle';
+  o.frequency.setValueAtTime(pitch,t);o.frequency.exponentialRampToValueAtTime(pitch*0.2,t+0.08);
+  g.gain.setValueAtTime(gain,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.12);
+  o.start(t);o.stop(t+0.15);
+}
+function stopCurrentTrack(){ if(currentTrackStop){currentTrackStop();currentTrackStop=null;} }
+
+function startIntroMusic(){
+  stopCurrentTrack();
+  const notes=[261.63,329.63,392,523.25,329.63,392,523.25,659.25,349.23,440,523.25,698.46,261.63,329.63,392,523.25];
+  const beat=60/96*0.5;let running=true;currentTrackStop=()=>{running=false;};
+  function loop(t){if(!running)return;notes.forEach((f,i)=>playNote(f,t+i*beat,beat*0.85,0.1,'sine'));[261.63,261.63,349.23,261.63].forEach((f,i)=>playNote(f,t+i*(beat*4),beat*3.5,0.06,'sine'));setTimeout(()=>loop(AC.currentTime),(notes.length*beat-0.1)*1000);}
+  loop(AC.currentTime+0.05);
+}
+function startBattleMusic(){
+  stopCurrentTrack();
+  const mel=[220,261.63,220,196,174.61,196,220,261.63,196,261.63,329.63,261.63,196,174.61,164.81,196];
+  const bass=[110,110,130.81,110,98,110,130.81,110,116.54,130.81,164.81,130.81,110,98,87.31,98];
+  const beat=60/160*0.5;let running=true;currentTrackStop=()=>{running=false;};
+  function loop(t){if(!running)return;mel.forEach((f,i)=>playNote(f,t+i*beat,beat*0.75,0.13,'square'));bass.forEach((f,i)=>playNote(f,t+i*beat,beat*0.9,0.09,'sawtooth'));for(let i=0;i<4;i++){playDrum(t+i*beat*4,90,0.18);playDrum(t+i*beat*4+beat*2,200,0.10);}setTimeout(()=>loop(AC.currentTime),(mel.length*beat-0.1)*1000);}
+  loop(AC.currentTime+0.05);
+}
+function startVictoryMusic(){
+  stopCurrentTrack();
+  // 🎵 Romantic waltz — slow, tender, sine+triangle, no drums
+  // Key of D major, 3/4 feel at 66 bpm
+  const beat=60/66;
+  const mel=[
+    587.33,659.25,698.46,659.25,587.33,523.25,
+    493.88,523.25,587.33,659.25,587.33,493.88,
+    440,493.88,523.25,587.33,659.25,698.46,
+    783.99,698.46,659.25,587.33,523.25,587.33
+  ];
+  const inner=[
+    369.99,415.30,440,415.30,369.99,329.63,
+    293.66,329.63,369.99,415.30,369.99,293.66,
+    261.63,293.66,329.63,369.99,415.30,440,
+    493.88,440,415.30,369.99,329.63,369.99
+  ];
+  const bas=[
+    146.83,146.83,146.83,146.83,146.83,130.81,
+    123.47,123.47,123.47,146.83,146.83,123.47,
+    110,110,130.81,146.83,146.83,146.83,
+    164.81,164.81,146.83,146.83,130.81,146.83
+  ];
+  let running=true;currentTrackStop=()=>{running=false;};
+  function loop(t){
+    if(!running)return;
+    mel.forEach((f,i)=>playNote(f,t+i*beat,beat*1.4,0.09,'sine'));
+    inner.forEach((f,i)=>playNote(f,t+i*beat,beat*1.2,0.05,'triangle'));
+    bas.forEach((f,i)=>playNote(f,t+i*beat,beat*2.4,0.07,'sine'));
+    setTimeout(()=>loop(AC.currentTime),(mel.length*beat-0.2)*1000);
+  }
+  loop(AC.currentTime+0.05);
+}
+
+// Chase music — cinematic adventure, 3 rotating sections, soft & varied
+function startChaseMusic(){
+  stopCurrentTrack();
+  const beat = 60/108; // gentle pace
+  let running = true;
+  currentTrackStop = ()=>{ running = false; };
+
+  // Section A — playful pursuit theme (triangle, gentle)
+  const sA_mel = [523.25,587.33,659.25,587.33,523.25,493.88,523.25,659.25,
+                  698.46,659.25,587.33,523.25,493.88,440,493.88,523.25];
+  const sA_bas = [261.63,261.63,329.63,261.63,261.63,246.94,261.63,329.63,
+                  349.23,329.63,293.66,261.63,246.94,220,246.94,261.63];
+
+  // Section B — warm chase bridge (sine, slightly higher, hopeful)
+  const sB_mel = [659.25,698.46,783.99,698.46,659.25,587.33,659.25,783.99,
+                  880,783.99,698.46,659.25,587.33,523.25,587.33,659.25];
+  const sB_bas = [329.63,349.23,392,349.23,329.63,293.66,329.63,392,
+                  440,392,349.23,329.63,293.66,261.63,293.66,329.63];
+
+  // Section C — tender resolution theme (sine, quieter, winding down feel)
+  const sC_mel = [440,493.88,523.25,493.88,440,415.30,440,493.88,
+                  523.25,493.88,440,392,415.30,440,415.30,392];
+  const sC_bas = [220,246.94,261.63,246.94,220,207.65,220,246.94,
+                  261.63,246.94,220,196,207.65,220,207.65,196];
+
+  const sections = [
+    { mel:sA_mel, bas:sA_bas, mType:'triangle', bType:'sine',   mGain:0.07, bGain:0.05, drums:true  },
+    { mel:sB_mel, bas:sB_bas, mType:'sine',     bType:'sine',   mGain:0.07, bGain:0.05, drums:false },
+    { mel:sC_mel, bas:sC_bas, mType:'sine',     bType:'triangle',mGain:0.06, bGain:0.04, drums:false },
+  ];
+  let si = 0;
+
+  function playSection(t, sec){
+    if(!running) return;
+    sec.mel.forEach((f,i) => playNote(f, t+i*beat, beat*1.1, sec.mGain, sec.mType));
+    sec.bas.forEach((f,i) => playNote(f, t+i*beat, beat*1.8, sec.bGain, sec.bType));
+    if(sec.drums){
+      for(let k=0;k<2;k++){
+        playDrum(t+k*beat*8,       80, 0.08);
+        playDrum(t+k*beat*8+beat*4,160, 0.05);
+      }
+    }
+    const dur = (sec.mel.length * beat - 0.15) * 1000;
+    setTimeout(()=>{
+      if(!running) return;
+      si = (si+1) % sections.length;
+      playSection(AC.currentTime, sections[si]);
+    }, dur);
+  }
+
+  playSection(AC.currentTime + 0.05, sections[si]);
+}
+
+function playSFXHit(){
+  const buf=AC.createBuffer(1,AC.sampleRate*0.12,AC.sampleRate);
+  const d=buf.getChannelData(0);
+  for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);
+  const src=AC.createBufferSource(),g=AC.createGain();g.gain.value=0.25;
+  src.buffer=buf;src.connect(g);g.connect(AC.destination);src.start();
+}
+function playSFXChest(){[800,1000,1200,1600,2000].forEach((f,i)=>playNote(f,AC.currentTime+i*0.06,0.15,0.08,'sine'));}
+function playSFXVictory(){
+  // 🎵 Victory fanfare — classic 8-bit triumph jingle
+  const t=AC.currentTime;
+  const mel=[
+    [392,0.00],[392,0.12],[392,0.24],[523.25,0.38],
+    [392,0.55],[523.25,0.67],[659.25,0.82],
+    [659.25,1.02],[587.33,1.14],[622.25,1.26],[659.25,1.42],
+    [523.25,1.60],[622.25,1.72],[783.99,1.88],
+    [1046.5,2.10],[1046.5,2.30],[1046.5,2.50],[1046.5,3.00]
+  ];
+  const harm=[
+    [261.63,0.00],[261.63,0.12],[261.63,0.24],[329.63,0.38],
+    [261.63,0.55],[329.63,0.67],[392,0.82],
+    [392,1.02],[349.23,1.14],[369.99,1.26],[392,1.42],
+    [329.63,1.60],[369.99,1.72],[493.88,1.88],
+    [659.25,2.10],[698.46,2.30],[740,2.50],[783.99,3.00]
+  ];
+  mel.forEach(([f,d])=>playNote(f,t+d,0.22,0.18,'square'));
+  harm.forEach(([f,d])=>playNote(f,t+d,0.22,0.08,'triangle'));
+  // Drums on the accent beats
+  [0.38,0.82,1.42,1.88,2.10,2.50,3.00].forEach(d=>playDrum(t+d,90,0.22));
+  [0.00,0.55,1.02,1.60].forEach(d=>playDrum(t+d,200,0.12));
+}
+function playSFXFish(){
+  [600,800,1100,1500].forEach((f,i)=>playNote(f,AC.currentTime+i*0.07,0.12,0.12,'sine'));
+  const buf=AC.createBuffer(1,AC.sampleRate*0.06,AC.sampleRate);
+  const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3)*0.8;
+  const src=AC.createBufferSource(),g=AC.createGain();g.gain.value=0.18;
+  src.buffer=buf;src.connect(g);g.connect(AC.destination);src.start();
+}
+
+function ensureAudio(){if(AC.state==='suspended')AC.resume();}
+document.addEventListener('click',ensureAudio,{once:true});
+
+/* ═══════════════════════════════════════
+   AMBIENT
+   ═══════════════════════════════════════ */
+const heartBg=document.getElementById("heartBg");
+["♥","♡","❤","💕","✦"].forEach(ch=>{
+  for(let j=0;j<4;j++){
+    const s=document.createElement("span");
+    s.textContent=ch;s.style.left=Math.random()*100+"vw";
+    s.style.animationDuration=(6+Math.random()*10)+"s";
+    s.style.animationDelay=(Math.random()*8)+"s";
+    s.style.fontSize=(8+Math.random()*10)+"px";
+    heartBg.appendChild(s);
+  }
+});
+const sf=document.getElementById("starField");
+for(let i=0;i<60;i++){
+  const s=document.createElement("div");s.className="star";
+  const sz=1+Math.random()*2;
+  s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}vw;top:${Math.random()*100}vh;animation-delay:${Math.random()*3}s;animation-duration:${1.5+Math.random()*2}s;`;
+  sf.appendChild(s);
+}
+
+
+/* ═══ TITLE SCREEN ═══ */
+(function spawnTitleHearts(){
+  const container = document.getElementById('titleHearts');
+  const glyphs = ['♥','♡','✿','❀','✦'];
+  function spawn(){
+    const h = document.createElement('div');
+    h.className = 'title-heart';
+    h.textContent = glyphs[Math.floor(Math.random()*glyphs.length)];
+    h.style.left = (Math.random()*100) + 'vw';
+    h.style.color = Math.random() > 0.5 ? '#ff4d7d' : '#e0b8ff';
+    const dur = 6 + Math.random()*8;
+    h.style.animationDuration = dur + 's';
+    h.style.animationDelay = (Math.random()*4) + 's';
+    container.appendChild(h);
+    setTimeout(()=>h.remove(), (dur+4)*1000);
+  }
+  for(let i=0;i<18;i++) spawn();
+  setInterval(spawn, 800);
+})();
+
+function startGame(){
+  ensureAudio();
+  const ts = document.getElementById('titleScreen');
+  ts.classList.add('fade-out');
+  startIntroMusic();
+  setTimeout(()=>{
+    ts.style.display='none';
+    typeWriter(messages[0]);
+  }, 1300);
+}
+
+/* ═══════════════════════════════════════
+   INTRO
+   ═══════════════════════════════════════ */
+const dialog=document.getElementById("dialog");
+const fish=document.getElementById("fish");
+const clickPromptEl=document.getElementById("clickPrompt");
+const messages=["Oh hello there... 👀","I've been counting down to this day\nfor a while now.","You see, today is not just any day...","Today is the day the universe decided\nto do something truly extraordinary.","It made you. 🌸\nHappy Birthday, Nisha. ❤️"];
+let msgIndex=0;
+
+function typeWriter(text,i=0){
+  const chars=[...text]; // spread handles emoji & multi-byte chars correctly
+  if(i===0){dialog.style.display="block";dialog.textContent="";}
+  if(i<chars.length){
+    dialog.textContent+=chars[i];
+    setTimeout(()=>typeWriter(text,i+1),chars[i]==='\n'?80:32);
+  } else {
+    if(msgIndex>=messages.length-1){setTimeout(()=>startBattle(),3500);}
+    else{showFish();}
+  }
+}
+function showFish(){
+  fish.style.display="block";
+  fish.style.left=(10+Math.random()*75)+"vw";
+  fish.style.top=(20+Math.random()*50)+"vh";
+}
+fish.onclick=()=>{
+  ensureAudio();playSFXFish();
+  fish.style.display="none";msgIndex++;typeWriter(messages[msgIndex]);
+};
+// Game starts via title screen startGame()
+
+/* ═══════════════════════════════════════
+   BATTLE
+   ═══════════════════════════════════════ */
+const battle=document.getElementById("battle");
+const battleCat=document.getElementById("battleCat");
+const battleRat=document.getElementById("battleRat");
+const catHPBar=document.getElementById("catHP");
+const ratHPBar=document.getElementById("ratHP");
+const catHPNum=document.getElementById("catHPNum");
+const ratHPNum=document.getElementById("ratHPNum");
+const victory=document.getElementById("victory");
+const attackBtn=document.getElementById("attackBtn");
+let catHP=100,catMax=100,ratHP=100,ratMax=100,battleOver=false,catLIdx=0,ratLIdx=0;
+const catLines=["Purrr... today I fight for love! 🌸","Take some sparkles, you meanie! ✨💥","This is for my favourite human! 💕","Nobody ruins her birthday. Nobody. 🐾","I've been saving this move just for you! 😤🐱"];
+const ratLines=["Rat: Is that all you've got?! 😤","Rat: You're just a fluffy nuisance! 🐀","Rat: I fear no birthday cat! 😈","Rat: W-why won't you stop?! 😨","Rat: Okay okay... it hurts!! 😰"];
+
+function startBattle(){
+  if(clickPromptEl){clickPromptEl.style.display="none";clickPromptEl.style.animation="none";}
+  dialog.style.display="none";
+  document.getElementById("cat").style.display="none";
+  battle.style.display="block";
+  stopCurrentTrack();startBattleMusic();
+  const bd=document.getElementById("battleDialog");
+  if(bd){bd.style.display="block";bd.textContent="⚔️ THE EVIL RAT HAS COME\nTO RUIN THE BIRTHDAY!\nHe must be stopped!";}
+  attackBtn.disabled=true;
+  setTimeout(()=>{if(bd)bd.style.display="none";attackBtn.disabled=false;},3500);
+}
+function playerAttack(){
+  if(battleOver)return;attackBtn.disabled=true;playSFXHit();
+  const dmg=18+Math.floor(Math.random()*10);
+  ratHP=Math.max(0,ratHP-dmg);
+  ratHPBar.style.width=(ratHP/ratMax*100)+"%";ratHPNum.textContent=ratHP+" / "+ratMax;
+  spawnFlash(battleRat);battleRat.classList.add("shake-left");setTimeout(()=>battleRat.classList.remove("shake-left"),350);
+  const bd2=document.getElementById("battleDialog");if(bd2){bd2.style.display="block";bd2.textContent=catLines[catLIdx%catLines.length];}catLIdx++;
+  if(ratHP<=0){battleOver=true;setTimeout(slowMoFinish,1200);return;}
+  setTimeout(()=>{
+    playSFXHit();const rdmg=10+Math.floor(Math.random()*8);
+    const bEl=document.getElementById('battle');
+    bEl.classList.remove('shake');
+    void bEl.offsetWidth; // reflow to restart
+    bEl.classList.add('shake');
+    setTimeout(()=>bEl.classList.remove('shake'),420);
+    catHP=Math.max(2,catHP-rdmg);
+    catHPBar.style.width=(catHP/catMax*100)+"%";catHPNum.textContent=catHP+" / "+catMax;
+    spawnFlash(battleCat);battleCat.classList.add("shake-right");setTimeout(()=>battleCat.classList.remove("shake-right"),350);
+    const bd3=document.getElementById("battleDialog");if(bd3)bd3.textContent=ratLines[ratLIdx%ratLines.length];ratLIdx++;
+    setTimeout(()=>{attackBtn.disabled=false;},1600);
+  },1600);
+}
+function spawnFlash(el){
+  const r=el.getBoundingClientRect();
+  const f=document.createElement("div");f.className="flash";
+  f.style.left=(r.left+r.width/2-40)+"px";f.style.top=(r.top+r.height/2-40)+"px";
+  document.body.appendChild(f);setTimeout(()=>f.remove(),400);
+}
+function slowMoFinish(){
+  stopCurrentTrack();playSFXVictory();
+  attackBtn.style.display="none";
+  dialog.style.display="none";
+  const bdEnd=document.getElementById("battleDialog");if(bdEnd)bdEnd.style.display="none";
+  // Show victory text only — no extra dialog line after
+  victory.style.display="block";
+  spawnHeartBurst();
+  setTimeout(()=>{
+    battle.style.display="none";
+    startVictoryMusic();
+    document.getElementById("giftScreen").style.display="flex";
+    startPetals();
+  },2800);
+}
+function spawnHeartBurst(){
+  for(let i=0;i<12;i++){
+    const h=document.createElement("div");h.className="heart-burst";
+    h.textContent="♥";h.style.left=(20+Math.random()*60)+"vw";h.style.top=(30+Math.random()*40)+"vh";
+    h.style.animationDelay=(Math.random()*0.5)+"s";h.style.color=i%2===0?"#ff4d7d":"#ffb3c6";
+    document.body.appendChild(h);setTimeout(()=>h.remove(),2000);
+  }
+}
+
+/* ═══════════════════════════════════════
+   GIFTS
+   ═══════════════════════════════════════ */
+
+let petalInterval = null;
+function startPetals(){
+  if(petalInterval) return;
+  const petals = ['🌸','🌺','✿','❀','🌷'];
+  petalInterval = setInterval(()=>{
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.textContent = petals[Math.floor(Math.random()*petals.length)];
+    p.style.left = (Math.random()*100) + 'vw';
+    const dur = 4 + Math.random()*5;
+    p.style.animationDuration = dur + 's';
+    p.style.animationDelay = '0s';
+    p.style.fontSize = (10 + Math.random()*8) + 'px';
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(), dur*1000 + 200);
+  }, 350);
+}
+function stopPetals(){
+  if(petalInterval){ clearInterval(petalInterval); petalInterval=null; }
+  document.querySelectorAll('.petal').forEach(p=>p.remove());
+}
+
+let openedChests=new Set();
+function openReward(type,el){
+  playSFXChest();el.classList.add("open");el.style.pointerEvents="none";
+  openedChests.add(type);
+  const reward=document.getElementById("reward");
+  document.getElementById("giftScreen").style.display="none";
+  reward.style.display="flex";spawnConfetti();
+  const cb=`<div class="reward-close" onclick="backToChests()">✖ BACK</div>`;
+  if(type===1){
+    reward.innerHTML=cb+`<div class="poem-box"><div class="poem-title">✨ A Pixel Poem For You ✨</div>
+In a world of ones and zeros,<br>where pixels light the night,<br>there lives a girl who somehow is<br>the source of all my light.<br><br>
+She laughs and breaks the render code,<br>the room forgets to dim,<br>and every game I'll ever play<br>is better played with him… wait — <em>her</em>. 😅<br><br>
+So here's a cat, a battle fought,<br>a chest of gifts for you,<br>because you deserve a whole boss level<br>dedicated to you. 🌸<br><br>
+<strong style="color:var(--pink)">Happy Birthday, Nisha. ❤️</strong></div>`;
+  }
+  if(type===2){
+    const caps=["every adventure is better with you 🌸","you make the ordinary magical ✨","here's to many more chapters together 💕","you are my favourite place to be 🏡"];
+    const imgs=[
+      "https://drive.google.com/thumbnail?id=1ESV2Mrb7WR_dr5HPKoRMHDoCISgS9sZh&sz=w1000",
+      "https://drive.google.com/thumbnail?id=1NClK-PFuBf2qxZ0BsUwRtF1t0ohil4Nm&sz=w1000",
+      "https://drive.google.com/thumbnail?id=1d4MiC6yufz4fl00qLJfNAQttZbsQ2LlU&sz=w1000",
+      "https://drive.google.com/thumbnail?id=1DbpK8ze7K9oBwoJhbmf-jTE0xFWtpP1n&sz=w1000"
+    ];
+    const validImgs=imgs.filter(u=>u&&!u.startsWith("PHOTO_"));
+    let si=0;
+    if(validImgs.length===0){
+      reward.innerHTML=cb+`<div class="slide-frame" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:#1a0a2e;border-radius:12px;min-height:260px;"><div style="font-size:2.5rem">📸</div><div style="color:#e0b8ff;font-size:0.95rem;text-align:center;padding:0 20px;">Photos not added yet…<br><span style="color:#b088d8;font-size:0.8rem;">Add your image URLs in the PHOTO SLOTS</span></div></div><div class="slide-caption" id="sc">our story 💕</div>`;
+    } else {
+      reward.innerHTML=cb+`<div class="slide-frame"><img id="slide" src="${validImgs[0]}" style="transition:opacity 0.5s;"></div><div class="slide-caption" id="sc">${caps[0]}</div>`;
+      setInterval(()=>{si=(si+1)%validImgs.length;const img=document.getElementById("slide"),cap=document.getElementById("sc");if(img){img.style.opacity=0;setTimeout(()=>{img.src=validImgs[si];img.style.opacity=1;if(cap)cap.textContent=caps[Math.min(si,caps.length-1)];},500);}},3000);
+    }
+  }
+  if(type===3){
+    reward.innerHTML=cb+`<div class="letter-box"><div class="letter-title">💌 Reasons I'm Glad You Exist</div>
+<div class="letter-reason"><span class="reason-num">01.</span><span>Because the way you laugh is genuinely the best sound in any room — the kind that makes strangers smile without knowing why.</span></div>
+<div class="letter-reason"><span class="reason-num">02.</span><span>Because you care deeply, even when you pretend not to. You feel things fully and that is a rare and beautiful thing.</span></div>
+<div class="letter-reason"><span class="reason-num">03.</span><span>Because talking to you feels easy in a world where almost nothing is — like the universe took a breath and said "this one, keep this one."</span></div>
+<div class="letter-reason"><span class="reason-num">04.</span><span>Because you are genuinely funny. Not "haha sure" funny. Actually, embarrassingly, snort-laugh funny. 😄</span></div>
+<div class="letter-reason"><span class="reason-num">05.</span><span>Because the world is a measurably better place with you in it. That's not poetry — that's just true.</span></div>
+<div class="letter-sign">With all of this and more,<br>— your biggest fan 💕</div></div>`;
+  }
+}
+function backToChests(){
+  document.getElementById("reward").style.display="none";
+  const gs=document.getElementById("giftScreen");
+  gs.style.display="flex";
+  if(openedChests.size>=3){
+    setTimeout(()=>{gs.style.display="none";triggerEnding();},800);
+  }
+}
+function spawnConfetti(){
+  const cols=["#ff4d7d","#ff80ab","#ffb3c6","gold","white","#e0143c"];
+  for(let i=0;i<60;i++){
+    const c=document.createElement("div");c.className="confetti";
+    c.style.left=Math.random()*100+"vw";c.style.top="-10px";
+    c.style.background=cols[Math.floor(Math.random()*cols.length)];
+    c.style.animationDuration=(2+Math.random()*2)+"s";c.style.animationDelay=(Math.random()*1.5)+"s";
+    c.style.borderRadius=Math.random()>0.5?"50%":"0";
+    document.body.appendChild(c);setTimeout(()=>c.remove(),4500);
+  }
+}
+
+/* ═══════════════════════════════════════
+   ENDING
+   ═══════════════════════════════════════ */
+const endingMessages=[
+  "Hmm, you are indeed a greedy one.\nYou opened all the gifts.\nAs expected.\nHahahahahaha 😹",
+  "Psst... one more little thing. 🐾\nYour human left something for you.\nSomewhere cosy and close by... 🌸👀",
+  "Thanks for playing this game!\nHappy Birthday once again! 🎂\nSee ya! 👋"
+];
+let endingIdx=0;
+
+function triggerEnding(){
+  stopCurrentTrack();
+  stopPetals();
+  const screen=document.getElementById("endingScreen");
+  const wrap=document.getElementById("waveCatWrap");
+  screen.style.display="flex";
+  [523.25,659.25,783.99].forEach((f,i)=>playNote(f,AC.currentTime+i*0.12,0.25,0.1,'sine'));
+  setTimeout(()=>{
+    wrap.style.animation="endingSlideUp 0.8s cubic-bezier(0.34,1.4,0.64,1) forwards";
+    setTimeout(()=>showEndingDialog(),900);
+  },300);
+  screen.addEventListener("click",advanceEndingDialog);
+}
+
+const endingDialog=document.getElementById("endingDialog");
+function showEndingDialog(){ typeEndingMsg(endingMessages[endingIdx]); }
+function typeEndingMsg(text,i=0){
+  const chars=[...text]; // spread handles emoji & multi-byte chars correctly
+  if(i===0){endingDialog.style.display="block";endingDialog.innerHTML="";}
+  if(i<chars.length){
+    if(chars[i]==='\n'){endingDialog.appendChild(document.createElement("br"));setTimeout(()=>typeEndingMsg(text,i+1),80);}
+    else{endingDialog.appendChild(document.createTextNode(chars[i]));setTimeout(()=>typeEndingMsg(text,i+1),30);}
+  } else {
+    if(endingIdx<endingMessages.length-1){
+      const hint=document.createElement("span");hint.className="ending-dialog-tap";hint.textContent="— tap to continue —";
+      endingDialog.appendChild(document.createElement("br"));endingDialog.appendChild(hint);
+    } else {
+      setTimeout(()=>slideOutCat(),3000);
+    }
+  }
+}
+function advanceEndingDialog(){
+  if(endingIdx<endingMessages.length-1){endingIdx++;showEndingDialog();}
+}
+function slideOutCat(){
+  const wrap=document.getElementById("waveCatWrap");
+  wrap.style.transition="transform 1.2s cubic-bezier(0.4,0,0.6,1)";
+  wrap.style.transform="translateY(320px)";
+  setTimeout(()=>{
+    const screen=document.getElementById("endingScreen");
+    screen.style.transition="opacity 1.2s ease";
+    screen.style.opacity="0";
+    setTimeout(()=>{
+      screen.style.display="none";
+      screen.style.opacity="1";
+      launchChaseScreen();
+    },1300);
+  },800);
+}
+
+/* ═══════════════════════════════════════
+   CHASE SCREEN — cat hunts the rat forever
+   ═══════════════════════════════════════ */
+function launchChaseScreen(){
+  const screen=document.getElementById("chaseScreen");
+  screen.style.display="block";
+  stopCurrentTrack();
+  startChaseMusic();
+
+  const catEl  = document.getElementById("chaseCat");
+  const ratEl  = document.getElementById("chaseRat");
+  const W = ()=>window.innerWidth;
+  const H = ()=>window.innerHeight;
+  const CAT_W=110, CAT_H=130, RAT_W=100, RAT_H=110;
+
+  // Rat state — bounces chaotically, changes direction randomly
+  let rat = {
+    x: W()*0.7, y: H()*0.4,
+    vx: 3.2, vy: 2.1,
+    changeTimer: 0
+  };
+
+  // Cat state — chases rat with slight lag (lerp)
+  let cat = {
+    x: W()*0.1, y: H()*0.5,
+    vx: 0, vy: 0
+  };
+
+  const CAT_SPEED = 2.8;
+  const RAT_SPEED = 3.8;
+
+  let lastHeartTime = 0;
+  let frameCount = 0;
+
+  function chaseLoop(ts){
+    frameCount++;
+    const w=W(), h=H();
+
+    // ── Rat: random direction changes + bounce off walls ──
+    rat.changeTimer--;
+    if(rat.changeTimer <= 0){
+      // Random new velocity with consistent speed
+      const angle = Math.random()*Math.PI*2;
+      rat.vx = Math.cos(angle)*RAT_SPEED*(0.8+Math.random()*0.6);
+      rat.vy = Math.sin(angle)*RAT_SPEED*(0.8+Math.random()*0.6);
+      rat.changeTimer = 40+Math.floor(Math.random()*80);
+    }
+
+    rat.x += rat.vx;
+    rat.y += rat.vy;
+
+    // Bounce off edges
+    if(rat.x < 10)             { rat.x=10;  rat.vx=Math.abs(rat.vx); }
+    if(rat.x > w-RAT_W-10)    { rat.x=w-RAT_W-10; rat.vx=-Math.abs(rat.vx); }
+    if(rat.y < 10)             { rat.y=10;  rat.vy=Math.abs(rat.vy); }
+    if(rat.y > h-RAT_H-10)    { rat.y=h-RAT_H-10; rat.vy=-Math.abs(rat.vy); }
+
+    // ── Cat: steers toward rat (pursues) ──
+    const tx = rat.x + RAT_W/2 - CAT_W/2;
+    const ty = rat.y + RAT_H/2 - CAT_H/2;
+    const dx = tx - cat.x;
+    const dy = ty - cat.y;
+    const dist = Math.sqrt(dx*dx+dy*dy) || 1;
+    // Accelerate toward rat
+    cat.vx += (dx/dist)*CAT_SPEED*0.18;
+    cat.vy += (dy/dist)*CAT_SPEED*0.18;
+    // Clamp cat speed
+    const catSpd = Math.sqrt(cat.vx*cat.vx+cat.vy*cat.vy);
+    if(catSpd > CAT_SPEED){ cat.vx=(cat.vx/catSpd)*CAT_SPEED; cat.vy=(cat.vy/catSpd)*CAT_SPEED; }
+    cat.x += cat.vx;
+    cat.y += cat.vy;
+    // Keep cat in bounds
+    cat.x = Math.max(0, Math.min(w-CAT_W, cat.x));
+    cat.y = Math.max(0, Math.min(h-CAT_H, cat.y));
+
+    // ── Apply positions ──
+    catEl.style.left = cat.x+"px";
+    catEl.style.top  = cat.y+"px";
+    ratEl.style.left = rat.x+"px";
+    ratEl.style.top  = rat.y+"px";
+
+    // ── Flip sprites to face direction of travel ──
+    catEl.style.transform = cat.vx < 0 ? "scaleX(-1)" : "scaleX(1)";
+    ratEl.style.transform = rat.vx < 0 ? "scaleX(-1)" : "scaleX(1)";
+
+    // ── Spawn floating heart from cat every ~2s ──
+    if(ts - lastHeartTime > 2000){
+      lastHeartTime = ts;
+      spawnChaseHeart(cat.x + CAT_W/2, cat.y);
+    }
+
+    requestAnimationFrame(chaseLoop);
+  }
+
+  requestAnimationFrame(chaseLoop);
+
+  // Show THE END and stop music after credits finish scrolling (~38s)
+  setTimeout(()=>{
+    stopCurrentTrack();
+    const endScreen = document.getElementById('theEndScreen');
+    if(endScreen){ endScreen.style.display='flex'; }
+  }, 38500);
+}
+
+function spawnChaseHeart(x,y){
+  const h=document.createElement("div");h.className="chase-heart";
+  h.textContent="♥";h.style.left=x+"px";h.style.top=y+"px";
+  h.style.fontSize=(10+Math.random()*12)+"px";
+  h.style.color=Math.random()>0.5?"#ff4d7d":"#ffb3c6";
+  h.style.animationDuration=(1+Math.random()*0.8)+"s";
+  document.getElementById("chaseScreen").appendChild(h);
+  setTimeout(()=>h.remove(),2000);
+}
+</script>
+</body>
+</html>
